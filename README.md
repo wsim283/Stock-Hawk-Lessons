@@ -29,7 +29,7 @@ prior to this lesson, we have done some caching and syncing data using sync adap
 
  **Showing error message when ListView is empty**
 When we have airplane mode on or invalid location, our app currently shows a blank screen. Now it is a good idea to show an error message so that the user gets a feedback from the app. To do this, we can set a `TextView` as a sibling to the `ListView`:
-```
+```xml
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -71,7 +71,7 @@ In order to adress this, we'll do two things:
 `<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>`
 
 Now we need to implement the check in `onLoadFinished` but before that, it will help if we create a `Utility` method to check the network state:
-```
+```java
  public static boolean isNetworkAvailable(Context context){
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
@@ -81,7 +81,7 @@ Now we need to implement the check in `onLoadFinished` but before that, it will 
 ```
 
 This method will return true if an active network exists, then in `onLoadFinished`we add the check:
-```
+```java
         if(data == null || data.getCount() == 0){
             int message = R.string.empty_forecast_list;
             //if there is no active network, that means our empty data is due to that
