@@ -57,7 +57,38 @@ mListView.setEmpty(rootView.findViewById(R.id.listview_forecast_empty);
 mListView.setAdapter(mForecastAdapter);
 ```
 
+If you notice, when you leave airplane mode and goes back to sunshine, it will try to automatically fetch the data. This is one of the benefits of using `SyncAdapter`!
 
+**Are we offline?** Currently our error message is just showing "No Weather Information Available" and although it helps, we do not what is the possible cause of this error. The possible causes are:
+1. Server Down: the server gives us bad input. Either an empty response or a non json response.
+2. User is behind a captive web portal.
+3. No Connectivity.
 
+**Checking Connectivity**
+In order to adress this, we'll do two things:
+1. in `onLoadFinished`, if we get an empty cursor, we can run a check to see if the device is connected to the internet. 
+2. If not, then we can alter the error message to show "No Internet Connection Detected". We need a specific permission in order for Android to allow us run the check. To do this, we need to declare in `AndroidManifest.xml`:
+`<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>`
 
- 
+Now we need to implement the check in `onLoadFinished` but before that, it will help if we create a `Utility` method to check the network state:
+```
+ public static boolean isNetworkAvailable(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+```
+
+This method will return true if an active network exists, then in `onLoadFinished`we add the check:
+```
+        if(data == null || data.getCount() == 0){
+            int message = R.string.empty_forecast_list;
+            //if there is no active network, that means our empty data is due to that
+            if(!Utility.isNetworkAvailable(getActivity())){
+                message = R.string.empty_forecast_list_no_network;
+            }
+            ((TextView)getView().findViewById(R.id.listview_forecast_empty)).setText(message);
+        }
+    
+```
