@@ -60,7 +60,7 @@ mListView.setAdapter(mForecastAdapter);
 If you notice, when you leave airplane mode and goes back to sunshine, it will try to automatically fetch the data. This is one of the benefits of using `SyncAdapter`!
 
 **Are we offline?** Currently our error message is just showing "No Weather Information Available" and although it helps, we do not what is the possible cause of this error. The possible causes are:
-1. Server Down: the server gives us bad input. Either an empty response or a non json response.
+1. Server Errors: the server gives us bad input. Either an empty response or a non json response.
 2. User is behind a captive web portal.
 3. No Connectivity.
 
@@ -92,3 +92,21 @@ This method will return true if an active network exists, then in `onLoadFinishe
         }
     
 ```
+
+**Java Annotations** Before we start to explore the ways to handle Server errors, we need to look at [Java Annotations](https://docs.oracle.com/javase/tutorial/java/annotations/). We have seen some of these in use in our Nanodegree programs, namely `@Override`, `@NotNull` and `@TargetApi(..)`. We can create our own annotations and these helps our code to become more type safety.
+
+**Handling Server Errors** Enum is rather expensive and inefficient compare to constant variables so we should avoid these in android. We need to implement some type safety and  so we need to use Annotations. To enable Annotations in Android Studio we need to go to `File->Project Structure->Modules->app->Dependencies` and then add the `support-annotations` library. 
+
+Once added, we can now add our Annotations. The best place to add it is in `SunshineSyncAdapter.java` as it is the class where we perform the sync:
+
+```java
+    @Retention(SOURCE)
+    @IntDef({LOCATION_STATUS_OK,LOCATION_STATUS_SERVER_DOWN,LOCATION_STATUS_SERVER_INVALID,LOCATION_STATUS_UNKNOWN})
+    public @interface LocationStatus{}
+    public static final int LOCATION_STATUS_OK = 0;
+    public static final int LOCATION_STATUS_SERVER_DOWN = 1;
+    public static final int LOCATION_STATUS_SERVER_INVALID = 2;
+    public static final int LOCATION_STATUS_UNKNOWN = 3;
+```
+
+We need to declare it in this order. `@IntDef` would not work without `@interface` below it.
