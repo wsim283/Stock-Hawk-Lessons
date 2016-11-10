@@ -110,3 +110,41 @@ Once added, we can now add our Annotations. The best place to add it is in `Suns
 ```
 
 We need to declare it in this order. `@IntDef` would not work without `@interface` below it.
+
+We will be using `SharedPreferences` to save our locationStatus. To do this, we will create a static method that saves our locationStatus:
+```java
+  static private void setLocationStatus(Context context,@LocationStatus int locationStatus){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt(context.getString(R.string.location_status_key), locationStatus);
+        editor.commit();
+    }
+```
+
+Notice that we used `.commit()` rather than apply because when we perform the sync, we are already in the background thread. If we were in the foreground thread then `.apply()` would be more appropriate. Also notice that we put in `@LocationStatus` in the parameter, which is the annotation that we've created earlier.
+
+Then we call `setLocationStatus(..)` in the appropriate exception handlers :
+```java
+catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+            setLocationStatus(getContext(), LOCATION_STATUS_SERVER_INVALID);
+            }
+```
+
+and :
+```java
+catch (IOException e) {
+            Log.e(LOG_TAG, "Error ", e);
+            // If the code didn't successfully get the weather data, there's no point in attempting
+            // to parse it.
+            setLocationStatus(getContext(), LOCATION_STATUS_SERVER_DOWN);
+        }
+```
+
+It is important to note that we needed to do the successful location status when everything goes well:
+```java
+ Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
+            setLocationStatus(getContext(), LOCATION_STATUS_OK);
+```
