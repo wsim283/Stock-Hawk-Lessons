@@ -148,3 +148,70 @@ It is important to note that we needed to do the successful location status when
  Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
             setLocationStatus(getContext(), LOCATION_STATUS_OK);
 ```
+
+Now we need to set up the error message to the user if there is a server problem. Firstly, we need to make a Utility method `getLocationStatus`:
+```java
+ @SuppressWarnings("ResourceType")
+    public static @SunshineSyncAdapter.LocationStatus int getLocationStatus(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return  sharedPreferences.getInt(context.getString(R.string.location_status_key),SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    }
+```
+
+`@SuppressWarnings("ResourceType")` is needed because `sharedPreferences` won't know whether the value being retrieved is in or out of range of `SunshineSyncAdapter.LocationStatus` due to our annotation tag. and without the suppress warning, android will complain that it may not be in the range But since we are the one who coded this, we know that the values are definitely inside the range and so we can tell Android to ignore this warning during compilation and to do that we need to use suppress warning.
+
+Next we need to add the two error messages `@string/empty_forecast_list_server_down` and `@string/empty_forecast_list_server_error`,
+
+Then we need to refactor our code from onLoadFinished. The part where we check the network availability can be moved into a method called `updateEmptyView`. Now we have used the cursor data to check whether data retrieved is empty or not. However, we can't use this for handling server errors for 1 reason, when we need to check whether the sharedPreference value has been changed or not, we cannot access this cursor data as it is only in the scope of `onLoadFinished` but we have an alternative, and that is to check if `mForeCastAdapter.getCount()` is 0:
+```java
+ private void updateEmptyView(){
+        if(mForecastAdapter.getCount() == 0){
+            int message = R.string.empty_forecast_list;
+
+            @SunshineSyncAdapter.LocationStatus int location = Utility.getLocationStatus(getActivity());
+            switch(location){
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                    message = R.string.empty_forecast_list_server_down;
+                    break;
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                    message = R.string.empty_forecast_list_server_error;
+                    break;
+                default:
+                    //if there is no active network, that means our empty data is due to that
+                    if(!Utility.isNetworkAvailable(getActivity())){
+                        message = R.string.empty_forecast_list_no_network;
+                    }
+            }
+            
+            ((TextView)getView().findViewById(R.id.listview_forecast_empty)).setText(message);
+        }
+    }
+```
+Next we need `ForecastFragment` to implement `OnSharedPreferenceChangeListener` and then we implement the required override method:
+```java
+ @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(getString(R.string.location_status_key))){
+            updateEmptyView();
+        }
+    }
+```
+
+and lastly we need to register and unregister the listener in `onResume` and `onPause` respectively:
+```java
+ @Override
+    public void onResume() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
+```
+
+done!
