@@ -215,3 +215,66 @@ and lastly we need to register and unregister the listener in `onResume` and `on
 ```
 
 done!
+
+**Extra** We'd like to give extra feedbacks to errors happening with invalid location input, however due to an outdated code (OpenWeatherApi has changed the way invalid location are handled, if you type in Londan it will auto-corrects it to London) I decided to not reflect on the lessons about this. Note to self, if I need to somehow check this in the future, then look at the github repo instead.
+
+**Custom Preference**
+We would like to let the user allow to click "ok" after 3~4 digits entered for the location setting so inorder to do this we need to set a limit to an "ok" user input. To do this we will need Custom Preference.
+
+Firstly we need to have some custom attributes for our custom preference, we do this by simply adding `declare-styleable` in `@values/attrs.xml`(if it hasn't been created then just create it):
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LocationEditTextPreference">
+        <attr name="minLength" format="integer"/>
+    </declare-styleable>
+</resources>
+```
+
+This allow us to add a custom atribute `minLength` when we are using it in the `pref_general.xml`. Next we need to make our custom EditTextPreference, we're going to call this `LocationEditTextPreference` since that is what we called it in `attrs.xml` above:
+
+```java
+public class LocationEditTextPreference extends EditTextPreference{
+
+    static final private int DEFAULT_MINIMUM_LOCATION_LENGTH = 2;
+    int minLength;
+
+    public LocationEditTextPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.LocationEditTextPreference,
+                0,
+                0);
+
+        try{
+            if(!a.hasValue(R.styleable.LocationEditTextPreference_minLength)){
+                throw new RuntimeException("minLen required");
+            }
+
+            minLength = a.getInteger(R.styleable.LocationEditTextPreference_minLength, DEFAULT_MINIMUM_LOCATION_LENGTH);
+
+        }finally{
+            a.recycle();
+        }
+    }
+}
+```
+
+For a custom preference or view, at a minimum you need to implement the constructor with `(Context context, AttributeSet attrs)` without this implemented, you cannot call use any other constructor and will give an exception.
+
+The code here in the constructor is pretty straight-forward, we first get the attributes given to this object then we check our custom attribute `minLength`.
+
+Next we need to add our new custom preference to `pref_general.xml`:
+```xml
+ <com.example.android.sunshine.app.LocationEditTextPreference
+        xmlns:loctool="http://schemas.android.com/apk/res/com.example.android.sunshine.app"
+        android:title="@string/pref_location_label"
+        android:key="@string/pref_location_key"
+        android:defaultValue="@string/pref_location_default"
+        android:inputType="text"
+        android:singleLine="true"
+        loctool:minLength="3"/>
+```
+
+notice that we need to use `loctool` (name can be anything) for `minLength` that points to our project. 
