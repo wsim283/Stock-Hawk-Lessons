@@ -278,3 +278,43 @@ Next we need to add our new custom preference to `pref_general.xml`:
 ```
 
 notice that we need to use `loctool` (name can be anything) for `minLength` that points to our project. 
+
+Now that we have set our custom attribute, we will need to handle the dialog:
+```java
+ @Override
+    protected void showDialog(Bundle state) {
+        super.showDialog(state);
+
+        EditText editText = getEditText();
+       editText.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+                Dialog d = getDialog();
+                if(d instanceof AlertDialog){
+                    AlertDialog dialog = (AlertDialog) d;
+                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    if(s.length()< minLength){
+                        positiveButton.setEnabled(false);
+                    }else{
+                        positiveButton.setEnabled(true);
+                    }
+                }
+           }
+       });
+
+    }
+```
+
+first we will implement the override method `showDialog`. After the super method is called, we then get our EditText and then add a `TextChangedListener`.
+
+Next we will need to implment the `afterTextChanged` method. Each time the user enter a character, this method is called afterwards. We then get the dialog and check whether the length of text is below or above our `minLength` attribute. If it is below then we have to disable the positive button (ok button), otherwise we will enable it. Done!
