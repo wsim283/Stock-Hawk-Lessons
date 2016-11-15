@@ -318,3 +318,17 @@ Now that we have set our custom attribute, we will need to handle the dialog:
 first we will implement the override method `showDialog`. After the super method is called, we then get our EditText and then add a `TextChangedListener`.
 
 Next we will need to implment the `afterTextChanged` method. Each time the user enter a character, this method is called afterwards. We then get the dialog and check whether the length of text is below or above our `minLength` attribute. If it is below then we have to disable the positive button (ok button), otherwise we will enable it. Done!
+
+### Accessibility and Localisation:
+
+Not everyone uses their android device the same way. This includes people who has hearing, visual and other limitations. Our talkback is currently not up to par and we haven't done any localisation yet. In this section we will learn how to provide support and the **reach to all users**.
+
+**Accessibility(a11y) Checklist**
+
+* **Content Descriptions**: for user interface components that do not have visible text such as images, buttons and checkbox. To do this, we simply add to the view an attribute `android:contentDescription` or `setContentDescription()` if you want to do it dynamically. Note that decorative graphics are exception to this rule so make sure to set contentDescription to null for these.
+* **Focus-based Navigation**: ensure that user can navigate our screen layouts by using the hardware based, or software directional controls. Many users will employ D-pads, trackballs, keyboards and navigation gestures and you should be confident that your Apple support these. Put an exceptional focus on ensuring that any UI Element that accepts input is reachable. In some cases, this may require that UI components are focusable or else you may need to adjust the focus order to be more logical.
+* **No Audio Only Feedback**: Audio Feedback must always have a secondary feedback mechanism, to support users who are deaf or hard of hearing. For example, a sound alert for arrival of a message must be accompanied by a system notification, haptic feedback or some other visual queue.
+
+**A11y Testing with Talkback**
+
+Just like any other app, you would want to test your app. To do this wil A11y, you can enable your Talkback feature 
