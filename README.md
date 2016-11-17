@@ -331,4 +331,13 @@ Not everyone uses their android device the same way. This includes people who ha
 
 **A11y Testing with Talkback**
 
-Just like any other app, you would want to test your app. To do this wil A11y, you can enable your Talkback feature 
+Just like any other app, you would want to test your app. To do this wil A11y, you can enable your Talkback feature:
+
+Go to your **Setting->Accessibility**:
+
+![alt text](https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Accessibility%20Setting.png "Accessibility Setting")
+
+Then you need to turn Talkback to **On**:
+
+![alt text](https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Talkback%20Setting.png "Talkback Setting")
+
