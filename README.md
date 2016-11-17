@@ -335,10 +335,10 @@ Just like any other app, you would want to test your app. To do this wil A11y, y
 
 Go to your **Setting->Accessibility**:
 
-<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Accessibility%20Setting.png" alt="Accessibility Setting" width="250" height="500")>
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Accessibility%20Setting.png" alt="Accessibility Setting" width="300" height="500")>
 
 Then you need to turn Talkback to **On**:
 
-<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Talkback%20Setting.png" alt="Talkback Setting" width="250" height="500")>
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Talkback%20Setting.png" alt="Talkback Setting" width="300" height="500")>
 
 
