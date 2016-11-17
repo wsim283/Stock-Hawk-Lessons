@@ -341,4 +341,5 @@ Then you need to turn Talkback to **On**:
 
 <img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Talkback%20Setting.png" alt="Talkback Setting" width="300" height="500")>
 
-
+For guidelines on Testing Accessibility:
+https://developer.android.com/training/accessibility/testing.html#requirements
