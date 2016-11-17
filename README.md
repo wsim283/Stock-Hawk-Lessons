@@ -343,3 +343,69 @@ Then you need to turn Talkback to **On**:
 
 For guidelines on Testing Accessibility:
 https://developer.android.com/training/accessibility/testing.html#requirements
+
+**Localisation (L10n)**
+
+Currently This isn't that important as there are other priorities such as downloading and displaying images. Will come back to this in the end.
+
+###Libraries
+
+Our apk file is currently quite big, this is due to the fact that we are storing the images locally. It would be better to keep our apk small and then download and display these images over the internet instead. Hence why we need to use Libraries such as [Picasso](http://square.github.io/picasso/). Not only it is simple, it does the downloading in the background thread, cache the images so we don't have to re-download and loads more.
+
+It is important to note that some libraries are not up to date, incompatible with some APIs and even abandoned, so finding the right library is key. I have used Picasso in the past and it works out great, however in this course, we will look at [Glide](https://futurestud.io/tutorials/glide-getting-started) rather than Picasso. Important notes in choosing libraries is to read their Readme file and quick start guide. Looking at videos and screenshots of some demo of the library helps too, if not then we should read documentation and the libraries community to find out existing bugs. Looking at source code of the library should be last resort if it is available.
+
+**Start with Glide**
+
+Before we could use glide, we will need to compile the library inside `build.gradle`:
+```
+compile 'com.github.bumptech.glide:glide:3.5.2'
+```
+
+Next we need to add a few more things in:
+1. `strings.xml`, add the url for our images,
+```xml
+ <string name="format_art_url" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_<xliff:g id="description">%s</xliff:g>.png</string>
+```
+2. `dimens.xml`, icon sizes are usually 48dp so we need to add,
+```xml
+ <dimen name="notification_large_icon_default">48dp</dimen>
+```
+3. `Utility.java` we need to retrieve the right image url so we need to add the following method,
+```java
+ /**
+     * Helper method to provide the art urls according to the weather condition id returned
+     * by the OpenWeatherMap call.
+     *
+     * @param context Context to use for retrieving the URL format
+     * @param weatherId from OpenWeatherMap API response
+     * @return url for the corresponding weather artwork. null if no relation is found.
+     */
+    public static String getArtUrlForWeatherCondition(Context context, int weatherId) {
+        // Based on weather code data found at:
+        // http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes
+        if (weatherId >= 200 && weatherId <= 232) {
+            return context.getString(R.string.format_art_url, "storm");
+        } else if (weatherId >= 300 && weatherId <= 321) {
+            return context.getString(R.string.format_art_url, "light_rain");
+        } else if (weatherId >= 500 && weatherId <= 504) {
+            return context.getString(R.string.format_art_url, "rain");
+        } else if (weatherId == 511) {
+            return context.getString(R.string.format_art_url, "snow");
+        } else if (weatherId >= 520 && weatherId <= 531) {
+            return context.getString(R.string.format_art_url, "rain");
+        } else if (weatherId >= 600 && weatherId <= 622) {
+            return context.getString(R.string.format_art_url, "snow");
+        } else if (weatherId >= 701 && weatherId <= 761) {
+            return context.getString(R.string.format_art_url, "fog");
+        } else if (weatherId == 761 || weatherId == 781) {
+            return context.getString(R.string.format_art_url, "storm");
+        } else if (weatherId == 800) {
+            return context.getString(R.string.format_art_url, "clear");
+        } else if (weatherId == 801) {
+            return context.getString(R.string.format_art_url, "light_clouds");
+        } else if (weatherId >= 802 && weatherId <= 804) {
+            return context.getString(R.string.format_art_url, "clouds");
+        }
+        return null;
+    }
+```
