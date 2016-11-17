@@ -66,6 +66,7 @@ If you notice, when you leave airplane mode and goes back to sunshine, it will t
 
 **Checking Connectivity**
 In order to adress this, we'll do two things:
+
 1. in `onLoadFinished`, if we get an empty cursor, we can run a check to see if the device is connected to the internet. 
 2. If not, then we can alter the error message to show "No Internet Connection Detected". We need a specific permission in order for Android to allow us run the check. To do this, we need to declare in `AndroidManifest.xml`:
 `<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>`
@@ -362,6 +363,7 @@ compile 'com.github.bumptech.glide:glide:3.5.2'
 ```
 
 Next we need to add a few more things in:
+
 1. `strings.xml`, add the url for our images,
 ```xml
  <string name="format_art_url" translatable="false">https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-xxhdpi/art_<xliff:g id="description">%s</xliff:g>.png</string>
@@ -409,3 +411,38 @@ Next we need to add a few more things in:
         return null;
     }
 ```
+4. we need to add `android:adjustViewBounds="true"` to the `ImageView` for the icon so that it will adjust it's view bounds to match after Glide loads the image from the internet.
+
+Finally we need to use Glide and change our code, we'll start with `onLoadFinished` in `DetailFragment.java`:
+```java
+  Glide.with(this)
+                    .load(Utility.getArtUrlForWeatherCondition(getActivity(),weatherId))
+                    .error(Utility.getArtResourceForWeatherCondition(weatherId))
+                    .into(mIconView);
+```
+`.load` will load our image via the url utility method that we've added earlier. `.error` helps us to load our local images that we've already stored and use them incase there isn't any internet connectivity and `.into` will load the downloaded image to the `ImageView` right away.
+
+We're almost done, we need to do this in two more places and that is `ForecastAdapter`(for the `ListView`)and `SunshineSyncAdapter`(for notifications).
+
+For `ForecastAdapter` we are basically doing the same thing as DetailFragment so no need to cover that again, but for `SunshineSyncAdapter` we need to load it as bitmap and resize it to a notification standard:
+
+```java
+  Bitmap largeIcon = null;
+
+                    try {
+                        largeIcon = Glide.with(getContext())
+                                .load(Utility.getArtUrlForWeatherCondition(getContext(), weatherId))
+                                .asBitmap()
+                                .error(Utility.getArtResourceForWeatherCondition(weatherId))
+                                .into(width, height)
+                                .get();
+                    }catch (InterruptedException  | ExecutionException e){
+                        Log.e(LOG_TAG, e.toString());
+                    }
+```
+
+All the methods here is pretty straight-forwards except for the last `.get()` method.
+
+This will let us wait until the images are downloaded. When doing this we will need to ensure that:
+1. must be called in **background thread**
+2. must catch `InterruptedException` and `ExecutionException`
