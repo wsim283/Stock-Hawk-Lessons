@@ -446,3 +446,30 @@ All the methods here is pretty straight-forwards except for the last `.get()` me
 This will let us wait until the images are downloaded. When doing this we will need to ensure that:
 1. must be called in **background thread**
 2. must catch `InterruptedException` and `ExecutionException`
+
+**Update on Icons**: ran into a bit of a problem, settings isn't setting the summary value nor the radioButton setting ticked. The problem is because perhaps it is not such a good idea to have `ListPreference` values as hyper link strings because `ListPreference` can't seem to match the value.
+
+Fixed the summary problem by adding my own version of `findListPreferenceIndexValue`:
+```java
+ public static int findListPreferenceIndexValue(Context context,ListPreference listPreference, String stringValue, String key){
+
+        int index = 0;
+        int max = (key.equals(context.getString(R.string.pref_units_key)))? MAX_TEMP_TYPES:MAX_ICON_PACKS;
+
+        while(index < max){
+            if (listPreference.getEntryValues()[index].toString().equals(stringValue)) {
+                return index;
+            }
+            index++;
+        }
+
+        //if we get here then we didn't find any match
+        index = -1;
+        return index;
+}
+```
+
+After several tests, it turns out `CharSequence` needs to be converted to string via `toString()`. This would not matter for any ordinary string but ours is a hyperlink and for some reason it works.
+
+**TODO:** `RadioButton` dialog setting for icons isn't working properly and I suspect the problem is the same. Don't have time to refactor but this needs to be done some time.
+
