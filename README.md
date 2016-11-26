@@ -473,3 +473,21 @@ After several tests, it turns out `CharSequence` needs to be converted to string
 
 **TODO:** `RadioButton` dialog setting for icons isn't working properly and I suspect the problem is the same. Don't have time to refactor but this needs to be done some time.
 
+
+###Google Cloud Messaging
+At this point, I am still very unclear of what GCM is. [Officially](https://developers.google.com/cloud-messaging/), it is:
+
+_"Send data from your server to your users' devices, and receive messages from devices on the same connection. The GCM service handles all aspects of queueing of messages and delivery to client applications running on target devices,"_
+
+After some time spent thinking, isn't this just `AsyncTask`? `SyncAdapter`? `Volley`? `Retrofit`? 
+
+At this stage of the lesson, I am aware that with GCM we can also handle the server side but this is still very unclear for Sunshine, because we do not need to handle any server side as it is handled already by OpenWeather.  Keeping an open mind here, hopefully it will all make sense later down the lesson. **UPDATE**: I have now finished the lessons and it all makes sense! so in this case, we are focusing on Sunshine notifications but information coming from **Server side**.
+
+Yes, we have implemented notifications which `syncAdapter` does once a day, but what if there is a message from the server that is needed to be given to the user instantly? for example an emergency weather warning. To do this, we need to implement GCM to keep listening whether there is any messages coming from the Server. This technique can be used in other situations like for example a news app to show breaking news in the notifications. It all makes sense now, it is definitely more distinguishable then the other methods I meantioned earlier. 
+
+Also there is no point to reflect on how we set up GCM, as it is constantly being updated. **UPDATE**: Apparently GCM has been **deprecated** and the new version is called **Firebase**, so google that for the setup.
+
+**UPDATE**: it is confirmed that there is no requirement to use GCM for Stock Hawk, so it is best to use FCM right away, in the meantime for the sake of the lesson, we need to use GCM.
+
+
+
