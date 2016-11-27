@@ -347,7 +347,33 @@ https://developer.android.com/training/accessibility/testing.html#requirements
 
 **Localisation (L10n)**
 
-Currently This isn't that important as there are other priorities such as downloading and displaying images. Will come back to this in the end.
+Firstly we need to identify 3 things for localisation:
+1. Country
+2. Locale
+3. Language
+
+Once we figure these 3 out, we will identify our niche and start supporting localisation.
+
+Firstly we need to ensure that **all strings** are included in `values/strings.xml` and that we do not have any hard-coded strings in our java code, otherwise these strings will be missed out for localisation. 
+
+Secondly, we need to ensure that for those strings that does not need translation, we need to set `translatable` attribute to `false` and also use the `<xliff:g>` if needed for string formatting.
+
+Thirdly, we wil make our new folders to support localisation, that is if our target market is france, we need to include **`values-fr/strings.xml`**. If we don't, by default it will just fall to `values/strings.xml`.
+
+Next, we need to re-adjust our layouts. Note that some market requires **Right to left** (RTL) orientation, therefore we should ensure that there is enough margin from the left and right.
+
+Note that if we need to support android ver 16-, we will need to add `marginEnd` and `marginRight`, same goes with `marginStart` and `marginLeft`. ver16+ will just need the end and the start.
+
+We would also need to add an attribute to our application tag in `AndroidManifest.xml`, that is:
+
+```xml
+<application
+....
+android:supportsRtl="true"
+>
+```
+
+Finally, you can **forst RTL orientation** for developing purposes in the **Developers Options** in setings.
 
 ###Libraries
 
