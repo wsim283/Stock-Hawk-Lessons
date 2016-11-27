@@ -517,3 +517,27 @@ Also there is no point to reflect on how we set up GCM, as it is constantly bein
 
 
 
+###Material Design
+
+We will need to re-design our layouts for Sunshine. Although Sunshine has its positives, it still has alot of white spaces. Also, our landscape orientation on the phone/tablet seems to be stretched and is not good a good user-experience. So we will do the following:
+
+
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/phone%20landscape%20orientation%20changes.png" alt="Accessibility Setting" width="600" height="1000")>
+
+
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/phone%20landscape%20orientation%20detail%20changes.png" alt="Accessibility Setting" width="600" height="1000")>
+
+
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/phone%20orientation%20changes.png" alt="Accessibility Setting" width="600" height="1000")>
+
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/phone%20orientation%20detail%20changes.png" alt="Accessibility Setting" width="600" height="1000")>
+
+
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/tablet%20landscape%20orientation%20before.png" alt="Accessibility Setting" width="300" height="500")><img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/tablet%20landscape%20orientation%20after.png" alt="Accessibility Setting" width="300" height="500")>
+
+
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/tablet%20orientation20changes.png" alt="Accessibility Setting" width="600" height="1000")>
+
+
+
+
