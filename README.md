@@ -536,7 +536,79 @@ We will need to re-design our layouts for Sunshine. Although Sunshine has its po
 <img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/tablet%20landscape%20orientation%20before.png" alt="Tablet lanscape orientation before")><img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/tablet%20landscape%20orientation%20after.png" alt="table landscape orientation after")>
 
 
-<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/tablet%20orientation20changes.png" alt="Tablet portrait orientation changes")>
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/Tablet%20orientation20changes.png" alt="Tablet portrait orientation changes")>
+
+
+
+[Material Design](https://material.google.com/) has some neat and cool (not compulsory) tips. It contains color pallets which you could choose from for your app.
+
+The base theme should be of 500, lighter 100 and darket 700~800 range. For "Accent" colors, it is marked with "A###".
+
+This is what we have chosen for sunshine:
+<img src="https://github.com/wsim283/Stock-Hawk-Lessons/blob/master/images/sunshine%20color%20set.png" alt="Sunshine Color Set">
+
+Do the appropriate changes, notable in **`styles.xml`**.
+
+**From ActionBar to Toolbar**
+
+Android 5.0 has introduced a new `Toolbar` widget. This is a generalisation of the ActionBar but more flexible and control. In order to use the `Toolbar`, we must first choose a theme that does not contain the `ActionBar`:
+
+```xml
+ <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+```
+
+Then we need to create our Toolbar style:
+
+```xml
+ <!--main activity toolbar style-->
+    <!--Toolbar has transparent background by default, so we need to add our primary here-->
+    <!--the popupTheme is important when we set tje tool bar into dark theme in our layout, it will choose a light color for text so the components stands out -->
+    <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="popupTheme">@style/Theme.AppCompat.Light</item>
+    </style>
+```
+
+Then we set this to our "AppTheme":
+```xml
+ <item name="toolbarStyle">@style/Toolbar</item>
+```
+
+
+Next we need to create our toolbar object in the layout:
+```xml
+ <!--the app:theme here is the one that was mentioned in styles.xml, will make our text go well with dark theme-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        >
+        <!--Logo for our app, toolbar has an awesome viewgroup feature so that we can do things like the below-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_logo"
+            android:scaleType="center"/>
+
+    </android.support.v7.widget.Toolbar>
+```
+
+Since Toolbar has the viewgroup feature, we can set our logo like the above.
+
+Next we need to have the toolbar to have the characteristics and the behaviour of an action bar in `MainActivity`:
+
+```java
+  //we need to make the toolbar to behave like an actionbar
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        //setting the toolbar's characteristics to match an actionbar
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+```
+
+
 
 
 
